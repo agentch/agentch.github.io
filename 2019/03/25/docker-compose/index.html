@@ -28,7 +28,7 @@
 <meta property="og:site_name" content="Agentch&#39;s Blog">
 <meta property="og:description" content="docker-compose 搭建 Hygieia 环境">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2020-04-03T03:46:59.098Z">
+<meta property="og:updated_time" content="2020-04-03T10:17:21.312Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Jenkins 集成 Hygieia">
 <meta name="twitter:description" content="docker-compose 搭建 Hygieia 环境">
@@ -197,7 +197,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-04-03 11:46:59" itemprop="dateModified" datetime="2020-04-03T11:46:59+08:00">2020-04-03</time>
+                <time title="修改时间：2020-04-03 18:17:21" itemprop="dateModified" datetime="2020-04-03T18:17:21+08:00">2020-04-03</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -227,7 +227,7 @@
 <p>2.API<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker-compose up -d hygieia-api</span><br></pre></td></tr></table></figure></p>
 <p>3.UI<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker-compose up -d hygieia-ui</span><br></pre></td></tr></table></figure></p>
 <p>4.hygieia-jenkins-build-collector<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker-compose up -d hygieia-jenkins-build-collector</span><br></pre></td></tr></table></figure></p>
-<h2 id="Jenkins-安装-Hygieia-插件"><a href="#Jenkins-安装-Hygieia-插件" class="headerlink" title="Jenkins 安装 Hygieia 插件"></a>Jenkins 安装 Hygieia 插件</h2><p>上传hygieia-publisher.hpi到Jenkins</p>
+<h2 id="Jenkins-安装-Hygieia-插件"><a href="#Jenkins-安装-Hygieia-插件" class="headerlink" title="Jenkins 安装 Hygieia 插件"></a>Jenkins 安装 Hygieia 插件</h2><p>上传 hygieia-publisher.hpi 到 Jenkins</p>
 <h2 id="Pipeline-script"><a href="#Pipeline-script" class="headerlink" title="Pipeline script"></a>Pipeline script</h2><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">node(<span class="string">"master"</span>)&#123;</span><br><span class="line">    stage(<span class="string">"checkout"</span>)&#123;</span><br><span class="line">        checkout([<span class="string">$class:</span> <span class="string">'GitSCM'</span>, <span class="string">branches:</span> [[<span class="string">name:</span> <span class="string">'*/master'</span>]], <span class="string">doGenerateSubmoduleConfigurations:</span> <span class="literal">false</span>, <span class="string">extensions:</span> [], <span class="string">submoduleCfg:</span> [], <span class="string">userRemoteConfigs:</span> [[<span class="string">url:</span> <span class="string">'https://github.com/Sonlan/springboot-demo.git'</span>]]])</span><br><span class="line">        sh <span class="string">"ls -al"</span></span><br><span class="line">        sh <span class="string">"pwd"</span></span><br><span class="line">    &#125;</span><br><span class="line">    stage(<span class="string">"package"</span>)&#123;</span><br><span class="line">            sh <span class="string">"pwd"</span></span><br><span class="line">            sh <span class="string">"ls -al"</span></span><br><span class="line">            withMaven (<span class="string">maven:</span> <span class="string">'mvn'</span>) &#123;</span><br><span class="line">                sh <span class="string">"mvn -v"</span></span><br><span class="line">                sh <span class="string">"mvn package -Dmaven.test.skip=true"</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    sh <span class="string">'java -version'</span></span><br><span class="line">    sh <span class="string">'git --version'</span></span><br><span class="line">    stage(<span class="string">"hygieia"</span>)&#123;</span><br><span class="line">        hygieiaBuildPublishStep <span class="string">buildStatus:</span> <span class="string">'Success'</span></span><br><span class="line">        hygieiaArtifactPublishStep <span class="string">artifactDirectory:</span> <span class="string">'target'</span>, <span class="string">artifactGroup:</span> <span class="string">'com.syna.ci'</span>, <span class="string">artifactName:</span> <span class="string">'springboot-demo*.jar'</span>, <span class="string">artifactVersion:</span> <span class="string">''</span></span><br><span class="line">        hygieiaDeployPublishStep <span class="string">applicationName:</span> <span class="string">'SpringBoot'</span>, <span class="string">artifactDirectory:</span> <span class="string">'target'</span>, <span class="string">artifactGroup:</span> <span class="string">'com.syna.ci'</span>, <span class="string">artifactName:</span> <span class="string">'springboot-demo*.jar'</span>, <span class="string">artifactVersion:</span> <span class="string">''</span>, <span class="string">buildStatus:</span> <span class="string">'Success'</span>, <span class="string">environmentName:</span> <span class="string">'Dev'</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
     </div>
@@ -253,8 +253,8 @@
       <i class="fa fa-chevron-left"></i> Create docker swarm for ubuntu
     </a></div>
       <div class="post-nav-item">
-    <a href="/2019/12/25/gitlab多站点实时同步/" rel="next" title="Gitlab多站点实时同步">
-      Gitlab多站点实时同步 <i class="fa fa-chevron-right"></i>
+    <a href="/2019/12/25/gitlab多站点实时同步/" rel="next" title="Gitlab 多站点实时同步">
+      Gitlab 多站点实时同步 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
