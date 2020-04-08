@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Kubernetes 节点安装 nfs。">
+<meta name="keywords" content="kubernetes,nfs">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Centos7安装nfs">
+<meta property="og:url" content="http://yoursite.com/2020/04/08/centos7安装nfs/index.html">
+<meta property="og:site_name" content="Agentch&#39;s Blog">
+<meta property="og:description" content="Kubernetes 节点安装 nfs。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-04-08T06:06:59.758Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Centos7安装nfs">
+<meta name="twitter:description" content="Kubernetes 节点安装 nfs。">
+
+<link rel="canonical" href="http://yoursite.com/2020/04/08/centos7安装nfs/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Centos7安装nfs | Agentch's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Agentch's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Follow your heart,be your self.</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/08/centos7安装nfs/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Agentch">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Agentch's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Centos7安装nfs
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-04-08 10:07:25 / 修改时间：14:06:59" itemprop="dateCreated datePublished" datetime="2020-04-08T10:07:25+08:00">2020-04-08</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/笔记/" itemprop="url" rel="index"><span itemprop="name">笔记</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Kubernetes 节点安装 nfs。</p>
+<a id="more"></a>
+<p>操作系统：CentOS Linux release 7.7.1908 (Core)<br>IP:192.168.7.8<br>   192.168.5.36<br>     192.168.6.213</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#192.168.7.8/192.168.5.36/192.168.6.213</span></span><br><span class="line"><span class="comment">#查看 rpcbind 状态</span></span><br><span class="line">$ systemctl status rpcbind</span><br><span class="line"></span><br><span class="line">● rpcbind.service - RPC <span class="built_in">bind</span> service</span><br><span class="line">   Loaded: loaded (/usr/lib/systemd/system/rpcbind.service; enabled; vendor preset: enabled)</span><br><span class="line">   Active: inactive (dead)</span><br><span class="line"></span><br><span class="line">Apr 03 08:56:46 master systemd[1]: Dependency failed <span class="keyword">for</span> RPC <span class="built_in">bind</span> service.</span><br><span class="line">Apr 03 08:56:46 master systemd[1]: Job rpcbind.service/start failed with result <span class="string">'dependency'</span>.</span><br><span class="line"></span><br><span class="line">$ journalctl -xe  <span class="comment">#查看日志</span></span><br><span class="line"></span><br><span class="line">-- A session with the ID 101 has been terminated.</span><br><span class="line">Apr 08 09:51:47 master polkitd[813]: Registered Authentication Agent <span class="keyword">for</span> unix-process:18197:43531022 (system bus name :1.261493 [/usr/bin/pkttyagent --notify-fd 5 --fallback], object path /org/freedesktop/PolicyKit1/AuthenticationAgent, locale en_US.UTF-8)</span><br><span class="line">Apr 08 09:51:47 master systemd[1]: rpcbind.socket failed to listen on sockets: Address family not supported by protocol</span><br><span class="line">Apr 08 09:51:47 master systemd[1]: Failed to listen on RPCbind Server Activation Socket.</span><br><span class="line">-- Subject: Unit rpcbind.socket has failed</span><br><span class="line">-- Defined-By: systemd</span><br><span class="line">-- Support: http://lists.freedesktop.org/mailman/listinfo/systemd-devel</span><br><span class="line">--</span><br><span class="line">-- Unit rpcbind.socket has failed.</span><br><span class="line"></span><br><span class="line">$ vim  /etc/systemd/system/sockets.target.wants/rpcbind.socket <span class="comment">#rpcbind.service依赖rpcbind.socket</span></span><br><span class="line"></span><br><span class="line">[Unit]</span><br><span class="line">Description=RPCbind Server Activation Socket</span><br><span class="line"></span><br><span class="line">[Socket]</span><br><span class="line">ListenStream=/var/run/rpcbind.sock</span><br><span class="line"></span><br><span class="line"><span class="comment"># RPC netconfig can't handle ipv6/ipv4 dual sockets</span></span><br><span class="line">BindIPv6Only=ipv6-only</span><br><span class="line">ListenStream=0.0.0.0:111</span><br><span class="line">ListenDatagram=0.0.0.0:111</span><br><span class="line"><span class="comment">#ListenStream=[::]:111    #注释监听的ipv6端口</span></span><br><span class="line"><span class="comment">#ListenDatagram=[::]:111</span></span><br><span class="line"></span><br><span class="line">[Install]</span><br><span class="line">WantedBy=sockets.target</span><br><span class="line"></span><br><span class="line">$ systemctl restart rpcbind.socket <span class="comment">#重启rpcbind.socket</span></span><br><span class="line"></span><br><span class="line">Warning: rpcbind.socket changed on disk. Run <span class="string">'systemctl daemon-reload'</span> to reload units.</span><br><span class="line">Job <span class="keyword">for</span> rpcbind.socket failed. See <span class="string">"systemctl status rpcbind.socket"</span> and <span class="string">"journalctl -xe"</span> <span class="keyword">for</span> details.</span><br><span class="line"></span><br><span class="line">$ systemctl daemon-reload <span class="comment">#systemd发现配置文件有改动，需要重载一下</span></span><br><span class="line">$ systemctl restart rpcbind.socket</span><br><span class="line">$ systemctl status rpcbind.socket</span><br><span class="line"></span><br><span class="line">● rpcbind.socket - RPCbind Server Activation Socket</span><br><span class="line">   Loaded: loaded (/usr/lib/systemd/system/rpcbind.socket; enabled; vendor preset: enabled)</span><br><span class="line">   Active: active (listening) since Wed 2020-04-08 10:06:06 CST; 14s ago</span><br><span class="line">   Listen: /var/run/rpcbind.sock (Stream)</span><br><span class="line">           0.0.0.0:111 (Stream)</span><br><span class="line">           0.0.0.0:111 (Datagram)</span><br><span class="line"></span><br><span class="line">Apr 08 10:06:06 master systemd[1]: Listening on RPCbind Server Activation Socket.</span><br><span class="line"></span><br><span class="line">$ systemctl start rpcbind</span><br><span class="line">$ systemctl status rpcbind</span><br><span class="line"></span><br><span class="line">● rpcbind.service - RPC <span class="built_in">bind</span> service</span><br><span class="line">   Loaded: loaded (/usr/lib/systemd/system/rpcbind.service; enabled; vendor preset: enabled)</span><br><span class="line">   Active: active (running) since Wed 2020-04-08 10:22:27 CST; 5s ago</span><br><span class="line">  Process: 12694 ExecStart=/sbin/rpcbind -w <span class="variable">$RPCBIND_ARGS</span> (code=exited, status=0/SUCCESS)</span><br><span class="line"> Main PID: 12695 (rpcbind)</span><br><span class="line">    Tasks: 1</span><br><span class="line">   Memory: 1.2M</span><br><span class="line">   CGroup: /system.slice/rpcbind.service</span><br><span class="line">           └─12695 /sbin/rpcbind -w</span><br><span class="line"></span><br><span class="line">Apr 08 10:22:27 master systemd[1]: Starting RPC <span class="built_in">bind</span> service...</span><br><span class="line">Apr 08 10:22:27 master systemd[1]: Started RPC <span class="built_in">bind</span> service.</span><br><span class="line"></span><br><span class="line"><span class="comment">#192.168.7.8机器作为nfs server</span></span><br><span class="line">$ vim /etc/exports</span><br><span class="line"></span><br><span class="line">/data/nfs 192.168.7.0/22(rw,sync,no_root_squash) <span class="comment">#写入挂载配置</span></span><br><span class="line"></span><br><span class="line">$ systemctl start nfs</span><br><span class="line">$ mkdir /data/nfs -p <span class="comment">#创建挂载路径</span></span><br><span class="line">$ chmod 777 /data/nfs</span><br><span class="line">$ rpcinfo -p localhost</span><br><span class="line"></span><br><span class="line">   program vers proto   port  service</span><br><span class="line">    100000    4   tcp    111  portmapper</span><br><span class="line">    100000    3   tcp    111  portmapper</span><br><span class="line">    100000    2   tcp    111  portmapper</span><br><span class="line">    100000    4   udp    111  portmapper</span><br><span class="line">    100000    3   udp    111  portmapper</span><br><span class="line">    100000    2   udp    111  portmapper</span><br><span class="line">    100024    1   udp  46633  status</span><br><span class="line">    100024    1   tcp  58541  status</span><br><span class="line">    100005    1   udp  20048  mountd</span><br><span class="line">    100005    1   tcp  20048  mountd</span><br><span class="line">    100005    2   udp  20048  mountd</span><br><span class="line">    100005    2   tcp  20048  mountd</span><br><span class="line">    100005    3   udp  20048  mountd</span><br><span class="line">    100005    3   tcp  20048  mountd</span><br><span class="line">    100003    3   tcp   2049  nfs</span><br><span class="line">    100003    4   tcp   2049  nfs</span><br><span class="line">    100227    3   tcp   2049  nfs_acl</span><br><span class="line">    100003    3   udp   2049  nfs</span><br><span class="line">    100003    4   udp   2049  nfs</span><br><span class="line">    100227    3   udp   2049  nfs_acl</span><br><span class="line">    100021    1   udp  45040  nlockmgr</span><br><span class="line">    100021    3   udp  45040  nlockmgr</span><br><span class="line">    100021    4   udp  45040  nlockmgr</span><br><span class="line">    100021    1   tcp  34461  nlockmgr</span><br><span class="line">    100021    3   tcp  34461  nlockmgr</span><br><span class="line">    100021    4   tcp  34461  nlockmgr</span><br><span class="line"></span><br><span class="line">$ showmount -e localhost</span><br><span class="line"></span><br><span class="line">Export list <span class="keyword">for</span> localhost:</span><br><span class="line">/data/nfs 192.168.7.0/22</span><br><span class="line"></span><br><span class="line"><span class="comment">#192.168.5.36/192.168.6.213</span></span><br><span class="line">$ showmount -e 192.168.7.8</span><br><span class="line"></span><br><span class="line">Export list <span class="keyword">for</span> 192.168.7.8:</span><br><span class="line">/data/nfs 192.168.7.0/22</span><br><span class="line"></span><br><span class="line">$ mkdir -p /data/nfs <span class="comment">#挂载目录</span></span><br><span class="line">$ mount -t nfs 192.168.7.8:/data/nfs /data/nfs/</span><br><span class="line"></span><br><span class="line"><span class="comment"># 192.168.7.8</span></span><br><span class="line">$ <span class="built_in">cd</span> /data/nfs/</span><br><span class="line">$ touch 1.x</span><br><span class="line"></span><br><span class="line"><span class="comment"># 192.168.5.36</span></span><br><span class="line">$ <span class="built_in">cd</span> /data/nfs</span><br><span class="line">$ <span class="built_in">echo</span> 5.36 &gt;&gt; 1.x</span><br><span class="line"></span><br><span class="line"><span class="comment">#192.168.6.213</span></span><br><span class="line">$ <span class="built_in">cd</span> /data/nfs</span><br><span class="line">$ <span class="built_in">echo</span> 6.213 &gt;&gt; 1.x</span><br><span class="line"></span><br><span class="line"><span class="comment">#192.168.7.8</span></span><br><span class="line">$ <span class="built_in">echo</span> 7.8 &gt;&gt; 1.x</span><br><span class="line">$ cat 1.x</span><br><span class="line"></span><br><span class="line">5.36</span><br><span class="line">6.213</span><br><span class="line">7.8</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/kubernetes/" rel="tag"># kubernetes</a>
+              <a href="/tags/nfs/" rel="tag"># nfs</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/04/03/nginx配置优化/" rel="prev" title="Nginx 配置优化">
+      <i class="fa fa-chevron-left"></i> Nginx 配置优化
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Agentch"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">Agentch</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">10</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Agentch</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
